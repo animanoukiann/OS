@@ -32,26 +32,29 @@ int main()
 			exit(EXIT_FAILURE);
 		}
 	}
-
-	pid_t p2 = fork();
-	if (p2 == -1)
+	else
 	{
-		perror("Error while forking");
-		exit(EXIT_FAILURE);
-	}
-	else if (p2 == 0)
-	{
-		close(pipe_fd[1]);
-		int read_bytes = read(pipe_fd[0], &ID, sizeof(ID));
-		if (read_bytes == -1)
+		p1 = fork();
+		if (p1 == -1)
 		{
-			perror("Cannor read!");
+			perror("Error while forking");
 			exit(EXIT_FAILURE);
 		}
-		printf("The ID of process 2 is %d\n", ID);
+		else if (p1 == 0)
+		{
+			close(pipe_fd[1]);
+			int read_bytes = read(pipe_fd[0], &ID, sizeof(ID));
+			if (read_bytes == -1)
+			{
+				perror("Cannor read!");
+				exit(EXIT_FAILURE);
+			}
+			printf("The ID of process N2 is %d\n", ID);
+		}
 	}
+	wait(NULL);
+	wait(NULL);
 	close(pipe_fd[0]);
 	close(pipe_fd[1]);
-	wait(NULL);
-	wait(NULL);
 }
+
